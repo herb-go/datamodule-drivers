@@ -1,4 +1,4 @@
-package storageconfig
+package cacheconfig
 
 import (
 	"github.com/herb-go/datamodule-drivers/overseers/cachestoragebuilderoverseer"
@@ -6,15 +6,15 @@ import (
 	"github.com/herb-go/worker"
 )
 
-type Directive struct {
+type Storage struct {
 	ID     string
 	Engine func(v interface{}) error `config:", lazyload"`
 }
 
-func (d *Directive) ApplyTo(s *herbcache.Storage) error {
-	f := cachestoragebuilderoverseer.GetCacheStorageFactoryByID(d.ID)
+func (s *Storage) ApplyTo(storage *herbcache.Storage) error {
+	f := cachestoragebuilderoverseer.GetCacheStorageFactoryByID(s.ID)
 	if f == nil {
-		return worker.NewWorkerNotFounderError(d.ID)
+		return worker.NewWorkerNotFounderError(s.ID)
 	}
-	return f(s, d.Engine)
+	return f(storage, s.Engine)
 }
