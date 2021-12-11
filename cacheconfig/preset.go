@@ -1,6 +1,11 @@
 package cacheconfig
 
-import "github.com/herb-go/datamodules/herbcache/cachepreset"
+import (
+	"github.com/herb-go/datamodules/herbcache/cachepreset"
+	"github.com/herb-go/herbdata/dataencoding/msgpackencoding"
+)
+
+var DefaultEncoding = msgpackencoding.Encoding
 
 type Preset struct {
 	Namespace string
@@ -22,6 +27,7 @@ func (p *Preset) Exec(preset *cachepreset.Preset) (*cachepreset.Preset, error) {
 	if ttl <= 0 {
 		ttl = DefaultTTL
 	}
-	commands = commands.Concat(cachepreset.TTL(ttl))
+	encoding := DefaultEncoding
+	commands = commands.Concat(cachepreset.TTL(ttl), cachepreset.Encoding(encoding))
 	return commands.Exec(preset)
 }
